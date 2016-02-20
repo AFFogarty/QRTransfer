@@ -12,4 +12,11 @@
     tools:context="com.mchacks.qrtransfer.SendFileActivity"
     tools:showIn="@layout/activity_send_file">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="140dp" />
 </RelativeLayout>

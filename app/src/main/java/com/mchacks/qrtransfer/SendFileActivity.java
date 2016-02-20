@@ -58,7 +58,7 @@ public class SendFileActivity extends AppCompatActivity {
 
         try{
 
-            Bitmap bmp = generateQrCode("Hello Andrew!");
+            Bitmap bmp = QRProcessor.generateQrCode("Hello Andrew!");
             ImageView iv = (ImageView) findViewById(R.id.imageView);
             iv.setImageBitmap(bmp);
         } catch (WriterException e)

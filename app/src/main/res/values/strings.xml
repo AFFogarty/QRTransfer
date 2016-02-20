@@ -62,4 +62,5 @@
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_send_file">SendFileActivity</string>
     <string name="title_activity_receive_file">ReceiveFileActivity</string>
+    <string name="title_activity_play_image_slideshow">PlayImageSlideshowActivity</string>
 </resources>

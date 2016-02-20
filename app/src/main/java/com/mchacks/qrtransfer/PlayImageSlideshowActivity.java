@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import com.google.zxing.WriterException;
 import com.mchacks.qrtransfer.processing.BitmapProcessor;
 import com.mchacks.qrtransfer.processing.QRProcessor;
+import com.mchacks.qrtransfer.util.Constants;
 
 import java.util.LinkedList;
 
@@ -50,7 +51,7 @@ public class PlayImageSlideshowActivity extends AppCompatActivity {
         }
 
         // Final red image at end
-        qrCodes.add(BitmapProcessor.createImage(500, 500, Color.RED));
+        qrCodes.add(BitmapProcessor.createImage(Constants.qrWidth, Constants.qrHeight, Color.RED));
 
         final ImageView iv = (ImageView) findViewById(R.id.imageView);
 

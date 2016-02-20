@@ -40,4 +40,7 @@ dependencies {
 
     // File Chooser
     compile 'com.nononsenseapps:filepicker:2.5.0'
+
+    //Google utilities
+    compile 'com.google.guava:guava:19.0'
 }

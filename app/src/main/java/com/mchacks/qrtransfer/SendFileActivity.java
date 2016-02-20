@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.View;
 
 import com.mchacks.qrtransfer.processing.QRProcessor;
@@ -20,8 +22,12 @@ import android.widget.ImageView;
 
 import com.google.zxing.WriterException;
 
+import com.google.common.io.Files;
 import java.io.File;
+import java.io.IOError;
+import java.io.IOException;
 import java.util.ArrayList;
+
 
 
 public class SendFileActivity extends AppCompatActivity {
@@ -64,16 +70,6 @@ public class SendFileActivity extends AppCompatActivity {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        try{
-
-            Bitmap bmp = QRProcessor.generateQrCode("Hello Andrew!");
-            ImageView iv = (ImageView) findViewById(R.id.imageView);
-            iv.setImageBitmap(bmp);
-        } catch (WriterException e)
-        {
-            e.printStackTrace();
-        }
-
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -98,7 +94,7 @@ public class SendFileActivity extends AppCompatActivity {
                             (FilePickerActivity.EXTRA_PATHS);
 
                     if (paths != null) {
-                        for (String path: paths) {
+                        for (String path : paths) {
                             Uri uri = Uri.parse(path);
                             // Do something with the URI
                             handleLoadedFileUri(uri);
@@ -120,9 +116,35 @@ public class SendFileActivity extends AppCompatActivity {
      * @param uri
      */
     void handleLoadedFileUri(Uri uri) {
-        File file = new File(uri.getPath());
-        // Do something with the file
+        File f1 = new File(uri.getPath());
+        double file_size = (double) f1.length();
+        String encoded_string = parse_file(f1);
+        String substring = encoded_string.substring(0, 100);
+
+        try {
+            Bitmap bmp = QRProcessor.generateQrCode(substring);
+            ImageView iv = (ImageView) findViewById(R.id.imageView);
+            iv.setImageBitmap(bmp);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+
+        /*for (int i = 0; i < encoded_string.length(); i += 100)
+        {
+            bmp = QRProcessor.generateQrCode()
+        }*/
 
     }
 
+    String parse_file(File f) {
+        try {
+            byte[] file_bytes = Files.toByteArray(f);
+            String encoded_string = new String(file_bytes, "ISO-8859-1");
+            return encoded_string;
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return "";
+    }
 }

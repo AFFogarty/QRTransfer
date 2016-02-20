@@ -2,11 +2,9 @@ package com.mchacks.qrtransfer;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -51,7 +49,7 @@ public class PlayImageSlideshowActivity extends AppCompatActivity {
         }
 
         // Final red image at end
-        qrCodes.add(BitmapProcessor.createImage(Constants.qrWidth, Constants.qrHeight, Color.RED));
+        qrCodes.add(BitmapProcessor.createImage(Constants.qrDimension, Constants.qrDimension, Color.RED));
 
         final ImageView iv = (ImageView) findViewById(R.id.imageView);
 

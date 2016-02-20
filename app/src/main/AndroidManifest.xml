@@ -26,6 +26,24 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mchacks.qrtransfer.MainActivity" />
         </activity>
+        <activity
+            android:name=".SendFileActivity"
+            android:label="@string/title_activity_send_file"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mchacks.qrtransfer.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ReceiveFileActivity"
+            android:label="@string/title_activity_receive_file"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mchacks.qrtransfer.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

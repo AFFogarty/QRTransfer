@@ -57,8 +57,9 @@ public class SendFileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         try{
-            Bitmap bmp = QRProcessor.generateQrCode("Hello Andrew!");
-            ImageView iv = (ImageView) findViewById(R.id.image);
+
+            Bitmap bmp = generateQrCode("Hello Andrew!");
+            ImageView iv = (ImageView) findViewById(R.id.imageView);
             iv.setImageBitmap(bmp);
         } catch (WriterException e)
         {

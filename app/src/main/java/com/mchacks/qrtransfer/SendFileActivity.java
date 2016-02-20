@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.view.View;
 
 import com.mchacks.qrtransfer.processing.QRProcessor;
@@ -24,8 +22,8 @@ import com.google.zxing.WriterException;
 
 import com.google.common.io.Files;
 import java.io.File;
-import java.io.IOError;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 
@@ -117,9 +115,8 @@ public class SendFileActivity extends AppCompatActivity {
      */
     void handleLoadedFileUri(Uri uri) {
         File f1 = new File(uri.getPath());
-        double file_size = (double) f1.length();
         String encoded_string = parse_file(f1);
-        String substring = encoded_string.substring(0, 100);
+        String substring = encoded_string.substring(0, 1000);
 
         try {
             Bitmap bmp = QRProcessor.generateQrCode(substring);
@@ -143,8 +140,20 @@ public class SendFileActivity extends AppCompatActivity {
             return encoded_string;
         } catch (IOException e) {
             e.printStackTrace();
-            System.exit(1);
         }
         return "";
+    }
+
+    byte[] parse_string(String s)
+    {
+        byte[] data;
+        try{
+            data = s.getBytes("ISO-8859-1");
+            return data;
+        } catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
+        return new byte[0];
     }
 }

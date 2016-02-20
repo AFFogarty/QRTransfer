@@ -20,7 +20,7 @@ public class QRProcessor implements QRInterface {
 
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
 
-        int size = 256;
+        int size = 800;
 
         BitMatrix bitMatrix = qrCodeWriter.encode(myCodeText, BarcodeFormat.QR_CODE, size, size);
         int width = bitMatrix.getWidth();

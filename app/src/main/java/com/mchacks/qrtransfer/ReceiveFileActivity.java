@@ -1,6 +1,7 @@
 package com.mchacks.qrtransfer;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
@@ -8,13 +9,16 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.VideoView;
+
+import java.io.File;
 
 public class ReceiveFileActivity extends AppCompatActivity {
 
     static final int REQUEST_VIDEO_CAPTURE = 1;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receive_file);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -31,8 +35,22 @@ public class ReceiveFileActivity extends AppCompatActivity {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
             }
+
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        // Grab the video view from the XML
+        VideoView videoView = (VideoView) findViewById(R.id.videoView);
+        if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
+            Uri videoUri = intent.getData();
+            videoView.setVideoURI(videoUri);
+            videoView.start();
+
+            // Load the video as a file object
+            File videoFile = new File(videoUri.getPath());
+        }
+    }
 }

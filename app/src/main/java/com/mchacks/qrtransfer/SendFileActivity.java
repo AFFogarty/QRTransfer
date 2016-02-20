@@ -14,7 +14,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.google.zxing.common.BitMatrix;
 import com.mchacks.qrtransfer.processing.QRProcessor;
+import com.mchacks.qrtransfer.util.Constants;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 import android.widget.ImageView;
 
@@ -25,7 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-
+import java.util.LinkedList;
 
 
 public class SendFileActivity extends AppCompatActivity {
@@ -113,23 +115,34 @@ public class SendFileActivity extends AppCompatActivity {
      *
      * @param uri
      */
-    void handleLoadedFileUri(Uri uri) {
+    LinkedList<BitMatrix> handleLoadedFileUri(Uri uri) {
         File f1 = new File(uri.getPath());
         String encoded_string = parse_file(f1);
-        String substring = encoded_string.substring(0, 1000);
 
-        try {
-            Bitmap bmp = QRProcessor.generateQrCode(substring);
-            ImageView iv = (ImageView) findViewById(R.id.imageView);
-            iv.setImageBitmap(bmp);
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
-
-        /*for (int i = 0; i < encoded_string.length(); i += 100)
+        LinkedList<BitMatrix> file_code = new LinkedList<BitMatrix>();
+        int str_len = encoded_string.length();
+        for (int i = 0; i < str_len; i += (Constants.byteDensity + 1))
         {
-            bmp = QRProcessor.generateQrCode()
-        }*/
+            int end = i + Constants.byteDensity;
+            if (str_len <= end)
+            {
+                end = str_len - 1;
+            }
+            if(i >= end){
+                break;
+            }
+
+            String sub = encoded_string.substring(i, end);
+            try {
+                BitMatrix bmp = QRProcessor.generateQRCodeBitMatrx(sub);
+                file_code.add(bmp);
+            } catch (WriterException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("hello");
+        return file_code;
 
     }
 

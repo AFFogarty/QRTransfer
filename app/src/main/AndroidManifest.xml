@@ -37,7 +37,9 @@
             android:name=".ReceiveFileActivity"
             android:label="@string/title_activity_receive_file"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
+            <!-- Portrait necessary for the camera-->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mchacks.qrtransfer.MainActivity" />

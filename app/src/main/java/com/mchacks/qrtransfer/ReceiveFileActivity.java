@@ -25,6 +25,7 @@ public class ReceiveFileActivity extends AppCompatActivity {
 
         // Create an instance of Camera
         Camera mCamera = getCameraInstance();
+        mCamera.setDisplayOrientation(90);
         // Create our Preview view and set it as the content of our activity.
         CameraPreview mPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.cameraPreview);

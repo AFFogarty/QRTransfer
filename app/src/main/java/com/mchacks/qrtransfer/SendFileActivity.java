@@ -9,8 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,7 +16,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.mchacks.qrtransfer.processing.QRProcessor;
 import com.nononsenseapps.filepicker.FilePickerActivity;
@@ -34,8 +31,10 @@ public class SendFileActivity extends AppCompatActivity {
     private static final int FILE_CODE = 0;
 
     LinkedList<BitMatrix> bm = null;
-    ConcurrentLinkedQueue<Bitmap> images = new ConcurrentLinkedQueue<Bitmap>();
+    ConcurrentLinkedQueue<Bitmap> images = new ConcurrentLinkedQueue<>();
     Semaphore notEmpty = new Semaphore(0);
+    Semaphore notFull = new Semaphore(2);
+
     boolean doneRendering = false;
 
 
@@ -135,7 +134,6 @@ public class SendFileActivity extends AppCompatActivity {
 
     class SlideShowRunner implements Runnable
     {
-        Handler h = new Handler(Looper.getMainLooper());
         public void run()
         {
             final ImageView qrCodeImageView = (ImageView) findViewById(R.id.imageView);
@@ -149,6 +147,7 @@ public class SendFileActivity extends AppCompatActivity {
                 try {
                     notEmpty.acquire();
                     final Bitmap tmp = images.poll();
+                    notFull.release();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -162,7 +161,6 @@ public class SendFileActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
             }
         }
     }
@@ -173,13 +171,20 @@ public class SendFileActivity extends AppCompatActivity {
         {
             for(int i = 0; i < bm.size(); i++)
             {
-                Bitmap tmp = QRProcessor.bitMatrixToBitmap(bm.get(i));
-                images.add(tmp);
-                notEmpty.release(1);
+                try
+                {
+                    notFull.acquire();
+                    Bitmap tmp = QRProcessor.bitMatrixToBitmap(bm.get(i));
+                    images.add(tmp);
+                    notEmpty.release();
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+
             }
             doneRendering = true;
         }
-
     }
 
 }

@@ -203,13 +203,14 @@ public class SendFileActivity extends AppCompatActivity {
 
     class BMCreator implements Runnable
     {
+        QRProcessor QP = new QRProcessor();
         public void run()
         {
             while(!doneReading || !encoded_strings.isEmpty())
             {
                 try{
                     String tmp = encoded_strings.take();
-                    BitMatrix bmp = QRProcessor.generateQRCodeBitMatrix(tmp);
+                    BitMatrix bmp = QP.generateQRCodeBitMatrix(tmp);
                     matrices.put(bmp);
                 } catch (InterruptedException | WriterException e)
                 {

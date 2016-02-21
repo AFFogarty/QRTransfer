@@ -1,5 +1,7 @@
 package com.mchacks.qrtransfer;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,11 +12,16 @@ import android.widget.FrameLayout;
 
 import com.mchacks.qrtransfer.util.CameraPreview;
 
+import java.io.File;
+
 import static com.mchacks.qrtransfer.util.CameraPreview.getCameraInstance;
 
 public class ReceiveFileActivity extends AppCompatActivity {
 
-    static final int REQUEST_VIDEO_CAPTURE = 1;
+    public static final int MEDIA_TYPE_IMAGE = 1;
+
+    Camera mCamera = null;
+    Camera.PictureCallback mPicture = null;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -24,17 +31,46 @@ public class ReceiveFileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // Create an instance of Camera
-        Camera mCamera = getCameraInstance();
+        mCamera = getCameraInstance();
         mCamera.setDisplayOrientation(90);
         // Create our Preview view and set it as the content of our activity.
         CameraPreview mPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.cameraPreview);
         preview.addView(mPreview);
 
+        mPicture = new Camera.PictureCallback() {
+            @Override
+            public void onPictureTaken(byte[] data, Camera camera) {
+
+                Bitmap image = BitmapFactory.decodeByteArray(data, 0, data.length);
+                
+            }
+
+
+////                File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+////                if (pictureFile == null){
+////                    Log.d(TAG, "Error creating media file, check storage permissions: " +
+////                            e.getMessage());
+////                    return;
+////                }
+//
+//                try {
+//                    FileOutputStream fos = new FileOutputStream(pictureFile);
+//                    fos.write(data);
+//                    fos.close();
+//                } catch (FileNotFoundException e) {
+//                    Log.d(TAG, "File not found: " + e.getMessage());
+//                } catch (IOException e) {
+//                    Log.d(TAG, "Error accessing file: " + e.getMessage());
+//                }
+//            }
+        };
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mCamera.takePicture(null, null, mPicture);
 //                // If the user can record a video, let them.  Otherwise display a message
 //                if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
 //                    Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);

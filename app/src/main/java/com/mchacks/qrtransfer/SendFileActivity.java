@@ -76,7 +76,9 @@ public class SendFileActivity extends AppCompatActivity {
         playSlideshowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new Thread(new SlideShowRunner()).start();
+                if (bm != null) {
+                    new Thread(new SlideShowRunner()).start();
+                }
             }
         });
 

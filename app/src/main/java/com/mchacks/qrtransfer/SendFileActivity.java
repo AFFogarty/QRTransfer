@@ -142,14 +142,21 @@ public class SendFileActivity extends AppCompatActivity {
             final TextView statusText = (TextView) findViewById(R.id.statusText);
 
             int i = 1;
-            int totalImages = bm.size();
+            final int totalImages = bm.size();
             while(!doneRendering || !images.isEmpty())
             {
+                final int j = i;
                 try {
                     notEmpty.acquire();
-                    Bitmap tmp = images.poll();
-                    statusText.setText(String.format("%d/%d", i, totalImages));
-                    qrCodeImageView.setImageBitmap(tmp);
+                    final Bitmap tmp = images.poll();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            statusText.setText(String.format("%d/%d", j, totalImages));
+                            qrCodeImageView.setImageBitmap(tmp);
+                        }
+                    });
+                    i++;
                     Thread.sleep(3000);
 
                 } catch (InterruptedException e) {

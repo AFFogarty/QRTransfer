@@ -4,7 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.google.zxing.BinaryBitmap;
 import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
 
 /**
  * Created by Andrew on 2016-02-20.
@@ -36,4 +38,11 @@ public class BitmapProcessor {
         bm.getPixels(pixels, 0, width, 0,0, width, height);
         return new RGBLuminanceSource(width, height, pixels);
     }
+
+    public static BinaryBitmap toBinaryBitmap(Bitmap bm)
+    {
+        RGBLuminanceSource rgb = toRGBLumSource(bm);
+        return new BinaryBitmap(new HybridBinarizer(rgb));
+    }
 }
+

@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,13 +26,17 @@ import com.nononsenseapps.filepicker.FilePickerActivity;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
-
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
 
 public class SendFileActivity extends AppCompatActivity {
 
     private static final int FILE_CODE = 0;
 
     LinkedList<BitMatrix> bm = null;
+    ConcurrentLinkedQueue<Bitmap> images = new ConcurrentLinkedQueue<Bitmap>();
+    Semaphore notEmpty = new Semaphore(0);
+    boolean doneRendering = false;
 
 
     @Override
@@ -72,11 +77,7 @@ public class SendFileActivity extends AppCompatActivity {
         playSlideshowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    playSlideShow();
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                }
+                new Thread(new SlideShowRunner()).start();
             }
         });
 
@@ -129,35 +130,49 @@ public class SendFileActivity extends AppCompatActivity {
     void handleLoadedFileUri(Uri uri) {
         File f1 = new File(uri.getPath());
         this.bm = QRProcessor.fileToQrCodes(f1);
+        new Thread(new BMRenderer()).start();
     }
 
-    /**
-     * Play the file slideshow.
-     *
-     * @throws WriterException
-     */
-    void playSlideShow() throws WriterException {
-        if (this.bm != null) {
+    class SlideShowRunner implements Runnable
+    {
+        Handler h = new Handler(Looper.getMainLooper());
+        public void run()
+        {
             final ImageView qrCodeImageView = (ImageView) findViewById(R.id.imageView);
             final TextView statusText = (TextView) findViewById(R.id.statusText);
 
-            Handler[] handlers = new Handler[this.bm.size()];
+            int i = 1;
+            int totalImages = bm.size();
+            while(!doneRendering || !images.isEmpty())
+            {
+                try {
+                    notEmpty.acquire();
+                    Bitmap tmp = images.poll();
+                    statusText.setText(String.format("%d/%d", i, totalImages));
+                    qrCodeImageView.setImageBitmap(tmp);
+                    Thread.sleep(3000);
 
-            final int totalImages = this.bm.size();
-            for (int i = 0; i < this.bm.size(); i++) {
-                handlers[i] = new Handler();
-                final Bitmap qrCode = QRProcessor.bitMatrixToBitmap(this.bm.get(i));
-                final int current = i + 1;
-                handlers[i].postDelayed(new Runnable() {
-                    public void run() {
-                        // Set the status text
-                        statusText.setText(String.format("%d/%d", current, totalImages));
-                        // Set the
-                        qrCodeImageView.setImageBitmap(qrCode);
-                    }
-                }, i *3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
+    }
+
+    class BMRenderer implements Runnable
+    {
+        public void run()
+        {
+            for(int i = 0; i < bm.size(); i++)
+            {
+                Bitmap tmp = QRProcessor.bitMatrixToBitmap(bm.get(i));
+                images.add(tmp);
+                notEmpty.release(1);
+            }
+            doneRendering = true;
+        }
+
     }
 
 }

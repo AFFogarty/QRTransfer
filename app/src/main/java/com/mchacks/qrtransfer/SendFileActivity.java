@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,11 +19,8 @@ import android.widget.TextView;
 
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.mchacks.qrtransfer.processing.BitmapProcessor;
 import com.mchacks.qrtransfer.processing.QRProcessor;
-import com.mchacks.qrtransfer.util.Constants;
 import com.nononsenseapps.filepicker.FilePickerActivity;
-
 
 import java.io.File;
 import java.util.ArrayList;

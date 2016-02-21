@@ -16,26 +16,29 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.mchacks.qrtransfer.processing.QRProcessor;
+import com.mchacks.qrtransfer.util.Constants;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class SendFileActivity extends AppCompatActivity {
 
     private static final int FILE_CODE = 0;
 
-    LinkedList<BitMatrix> bm = null;
-    ConcurrentLinkedQueue<Bitmap> images = new ConcurrentLinkedQueue<>();
-    Semaphore notEmpty = new Semaphore(0);
-    Semaphore notFull = new Semaphore(2);
+    LinkedBlockingQueue<BitMatrix> matrices = new LinkedBlockingQueue<>(2);
+    LinkedBlockingQueue<Bitmap> images = new LinkedBlockingQueue<>(2);
+    String encoded_string = null;
 
     boolean doneRendering = false;
+    boolean doneCreating = false;
+
+    Thread rendererThread = null;
+    Thread creatorThread = null;
 
 
     @Override
@@ -131,9 +134,12 @@ public class SendFileActivity extends AppCompatActivity {
      * @param uri
      */
     void handleLoadedFileUri(Uri uri) {
-        File f1 = new File(uri.getPath());
-        this.bm = QRProcessor.fileToQrCodes(f1);
-        new Thread(new BMRenderer()).start();
+        File f = new File(uri.getPath());
+        this.encoded_string = QRProcessor.parse_file(f);
+        creatorThread = new Thread(new BMCreator());
+        rendererThread = new Thread(new BMRenderer());
+        creatorThread.start();
+        rendererThread.start();
     }
 
     class SlideShowRunner implements Runnable
@@ -144,14 +150,12 @@ public class SendFileActivity extends AppCompatActivity {
             final TextView statusText = (TextView) findViewById(R.id.statusText);
 
             int i = 1;
-            final int totalImages = bm.size();
+            final int totalImages = (int) (encoded_string.length() / Constants.byteDensity) + 1;
             while(!doneRendering || !images.isEmpty())
             {
                 final int j = i;
                 try {
-                    notEmpty.acquire();
-                    final Bitmap tmp = images.poll();
-                    notFull.release();
+                    final Bitmap tmp = images.take();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -160,7 +164,7 @@ public class SendFileActivity extends AppCompatActivity {
                         }
                     });
                     i++;
-                    Thread.sleep(3000);
+                    Thread.sleep(2000);
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -173,21 +177,47 @@ public class SendFileActivity extends AppCompatActivity {
     {
         public void run()
         {
-            for(int i = 0; i < bm.size(); i++)
+            while(!doneCreating || !images.isEmpty())
             {
                 try
                 {
-                    notFull.acquire();
-                    Bitmap tmp = QRProcessor.bitMatrixToBitmap(bm.get(i));
-                    images.add(tmp);
-                    notEmpty.release();
+                    Bitmap tmp = QRProcessor.bitMatrixToBitmap(matrices.take());
+                    images.put(tmp);
                 } catch (InterruptedException e)
                 {
                     e.printStackTrace();
                 }
-
             }
             doneRendering = true;
+        }
+    }
+
+    class BMCreator implements Runnable
+    {
+        public void run()
+        {
+            int str_len = encoded_string.length();
+            for (int i = 0; i < str_len; i += (Constants.byteDensity + 1))
+            {
+                int end = i + Constants.byteDensity;
+                if (str_len <= end)
+                {
+                    end = str_len - 1;
+                }
+                if(i >= end){
+                    break;
+                }
+
+                String sub = encoded_string.substring(i, end);
+                try {
+                    BitMatrix bmp = QRProcessor.generateQRCodeBitMatrix(sub);
+                    matrices.put(bmp);
+                } catch (WriterException | InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            doneCreating = true;
         }
     }
 

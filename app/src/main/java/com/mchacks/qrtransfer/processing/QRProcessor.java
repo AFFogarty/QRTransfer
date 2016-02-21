@@ -25,8 +25,9 @@ import java.util.LinkedList;
 
 public class QRProcessor  {
 
-    public static BitMatrix generateQRCodeBitMatrix(String myCodeText) throws WriterException {
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+    QRCodeWriter qrCodeWriter = new QRCodeWriter();
+
+    public  BitMatrix generateQRCodeBitMatrix(String myCodeText) throws WriterException {
         int size = Constants.qrDimension;
         return qrCodeWriter.encode(myCodeText, BarcodeFormat.QR_CODE, size, size);
     }
@@ -51,6 +52,7 @@ public class QRProcessor  {
      */
     public static LinkedList<BitMatrix> fileToQrCodes(File file) {
         String encoded_string = parse_file(file);
+        QRProcessor QP = new QRProcessor();
 
         LinkedList<BitMatrix> file_code = new LinkedList<BitMatrix>();
         int str_len = encoded_string.length();
@@ -67,7 +69,7 @@ public class QRProcessor  {
 
             String sub = encoded_string.substring(i, end);
             try {
-                BitMatrix bmp = QRProcessor.generateQRCodeBitMatrix(sub);
+                BitMatrix bmp = QP.generateQRCodeBitMatrix(sub);
                 file_code.add(bmp);
             } catch (WriterException e)
             {

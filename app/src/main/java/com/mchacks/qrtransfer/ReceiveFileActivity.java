@@ -6,8 +6,7 @@ import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
+
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -24,7 +23,6 @@ import com.mchacks.qrtransfer.processing.QRProcessor;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
 
 public class ReceiveFileActivity extends AppCompatActivity {
@@ -89,6 +87,7 @@ public class ReceiveFileActivity extends AppCompatActivity {
         }
         String result = strbuilder.toString();
         byte[] barr = QRProcessor.parse_string(result);
+        barcodeView.setStatusText(result);
         System.out.println(result);
     }
 

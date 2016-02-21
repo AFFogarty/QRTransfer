@@ -168,7 +168,16 @@ public class SendFileActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             statusText.setText(String.format("%d/%d", j, totalImages));
+                            qrCodeImageView.setVisibility(View.GONE);
+
+                        }
+                    });
+                    Thread.sleep(500);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
                             qrCodeImageView.setImageBitmap(tmp);
+                            qrCodeImageView.setVisibility(View.VISIBLE);
                         }
                     });
                     i++;

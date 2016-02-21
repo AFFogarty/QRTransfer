@@ -1,5 +1,7 @@
 package com.mchacks.qrtransfer;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -12,6 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.VideoView;
 
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.PlanarYUVLuminanceSource;
+import com.google.zxing.Result;
+import com.google.zxing.common.HybridBinarizer;
 import com.mchacks.qrtransfer.processing.QRProcessor;
 
 import java.io.File;
@@ -55,29 +64,19 @@ public class ReceiveFileActivity extends AppCompatActivity {
             videoView.setVideoURI(videoUri);
             videoView.start();
 
-//            // Load the video as a file object
+            // Load the video as a file object
             File videoFile = new File(videoUri.getPath());
 
-//            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-//            retriever.setDataSource(videoUri.getPath());
-
-//            String extension = ".jpg";
-            for (int i = 0; i < 10; i++) {
-//                Bitmap image = retriever.getFrameAtTime(i);
-
-//                try {
-//                    System.out.println(readQRCode(image));
-//                } catch (FormatException e) {
-//                    e.printStackTrace();
-//                } catch (ChecksumException e) {
-//                    e.printStackTrace();
-//                } catch (NotFoundException e) {
-//                    e.printStackTrace();
-//                }
-            }
-            QRProcessor processor = new QRProcessor();
-            // Decode the video
-            File output = processor.videoToFile(videoFile);
+//            MultiFormatReader reader = new MultiFormatReader();
+//            LuminanceSource source = new PlanarYUVLuminanceSource(yuvData, dataWidth, dataHeight, left, top, width, height, false);
+//            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+//            Result result;
+//            try {
+//                result = reader.decode(bitmap);
+//            } catch (NotFoundException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
         }
     }
 }

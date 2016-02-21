@@ -79,7 +79,7 @@ public class SendFileActivity extends AppCompatActivity {
         playSlideshowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (bm != null) {
+                if (encoded_string != null) {
                     TextView statusText = (TextView) findViewById(R.id.statusText);
                     statusText.setText(R.string.generatingMessage);
                     new Thread(new SlideShowRunner()).start();

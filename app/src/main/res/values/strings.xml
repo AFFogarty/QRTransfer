@@ -2,4 +2,5 @@
     <string name="app_name">QR Transfer</string>
     <string name="title_activity_send_file">Send File</string>
     <string name="title_activity_receive_file">Receive File</string>
+    <string name="generatingMessage">Generating QR codes...</string>
 </resources>

@@ -77,6 +77,8 @@ public class SendFileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (bm != null) {
+                    TextView statusText = (TextView) findViewById(R.id.statusText);
+                    statusText.setText(R.string.generatingMessage);
                     new Thread(new SlideShowRunner()).start();
                 }
             }

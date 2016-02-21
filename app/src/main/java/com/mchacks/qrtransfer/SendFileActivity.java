@@ -4,17 +4,25 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.mchacks.qrtransfer.processing.BitmapProcessor;
 import com.mchacks.qrtransfer.processing.QRProcessor;
+import com.mchacks.qrtransfer.util.Constants;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 
 
@@ -107,9 +115,11 @@ public class SendFileActivity extends AppCompatActivity {
      *
      * @param uri
      */
-    LinkedList<BitMatrix> handleLoadedFileUri(Uri uri) {
+    void handleLoadedFileUri(Uri uri) {
         File f1 = new File(uri.getPath());
-        return QRProcessor.fileToQrCodes(f1);
+        LinkedList<BitMatrix> bm = QRProcessor.fileToQrCodes(f1);
+ 
     }
+
 
 }

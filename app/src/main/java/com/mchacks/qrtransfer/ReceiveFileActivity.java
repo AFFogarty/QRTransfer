@@ -2,6 +2,8 @@ package com.mchacks.qrtransfer;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -12,10 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.VideoView;
 
-import com.mchacks.qrtransfer.processing.QRInterface;
-import com.mchacks.qrtransfer.processing.QRProcessor;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.FormatException;
+import com.google.zxing.NotFoundException;
 
 import java.io.File;
+
+import static com.mchacks.qrtransfer.processing.QRProcessor.readQRCode;
 
 public class ReceiveFileActivity extends AppCompatActivity {
 
@@ -56,11 +61,26 @@ public class ReceiveFileActivity extends AppCompatActivity {
             videoView.setVideoURI(videoUri);
             videoView.start();
 
-            // Load the video as a file object
+//            // Load the video as a file object
             File videoFile = new File(videoUri.getPath());
-            QRInterface processor = new QRProcessor();
-            // Decode the video
-            File output = processor.videoToFile(videoFile);
+
+//            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+//            retriever.setDataSource(videoUri.getPath());
+
+//            String extension = ".jpg";
+            for (int i = 0; i < 10; i++) {
+//                Bitmap image = retriever.getFrameAtTime(i);
+
+//                try {
+//                    System.out.println(readQRCode(image));
+//                } catch (FormatException e) {
+//                    e.printStackTrace();
+//                } catch (ChecksumException e) {
+//                    e.printStackTrace();
+//                } catch (NotFoundException e) {
+//                    e.printStackTrace();
+//                }
+            }
         }
     }
 }

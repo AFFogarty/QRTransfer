@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import com.google.zxing.BinaryBitmap;
+import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 
@@ -35,9 +36,18 @@ public class BitmapProcessor {
         int width = bm.getWidth();
         int height = bm.getHeight();
         int[] pixels = new int[width * height];
-        bm.getPixels(pixels, 0, width, 0,0, width, height);
+        bm.getPixels(pixels, 0, width, 0, 0, width, height);
         return new RGBLuminanceSource(width, height, pixels);
     }
+
+//    public static PlanarYUVLuminanceSource toYUVLumSource(Bitmap bm)
+//    {
+//        int width = bm.getWidth();
+//        int height = bm.getHeight();
+//        int[] pixels = new int[width * height];
+//        bm.getPixels(pixels, 0, width, 0, 0, width, height);
+//        return new PlanarYUVLuminanceSource(pixels, width, height, 0, 0, width, height, false);
+//    }
 
     public static BinaryBitmap toBinaryBitmap(Bitmap bm)
     {

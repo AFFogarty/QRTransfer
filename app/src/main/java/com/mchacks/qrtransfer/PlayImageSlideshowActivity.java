@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import com.mchacks.qrtransfer.processing.BitmapProcessor;
 import com.mchacks.qrtransfer.processing.QRProcessor;
 import com.mchacks.qrtransfer.util.Constants;
@@ -46,7 +47,8 @@ public class PlayImageSlideshowActivity extends AppCompatActivity {
 
         // Generate some junk files
         for (int i = 0; i < 5; i++) {
-            qrCodes.add(QRProcessor.generateQrCode("!" + i + "..." + i + "..." + i + "!"));
+            BitMatrix b = QRProcessor.generateQRCodeBitMatrix("!" + i + "..." + i + "..." + i + "!");
+            qrCodes.add(QRProcessor.bitMatrixToBitmap(b));
         }
 
         // Final red image at end

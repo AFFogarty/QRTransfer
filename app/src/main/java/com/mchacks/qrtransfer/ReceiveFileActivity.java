@@ -2,8 +2,6 @@ package com.mchacks.qrtransfer;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,13 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.VideoView;
 
-import com.google.zxing.ChecksumException;
-import com.google.zxing.FormatException;
-import com.google.zxing.NotFoundException;
+import com.mchacks.qrtransfer.processing.QRProcessor;
 
 import java.io.File;
-
-import static com.mchacks.qrtransfer.processing.QRProcessor.readQRCode;
 
 public class ReceiveFileActivity extends AppCompatActivity {
 
@@ -81,6 +75,9 @@ public class ReceiveFileActivity extends AppCompatActivity {
 //                    e.printStackTrace();
 //                }
             }
+            QRProcessor processor = new QRProcessor();
+            // Decode the video
+            File output = processor.videoToFile(videoFile);
         }
     }
 }

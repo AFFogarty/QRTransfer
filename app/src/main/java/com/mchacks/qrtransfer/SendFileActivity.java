@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,18 +13,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.google.zxing.common.BitMatrix;
 import com.mchacks.qrtransfer.processing.QRProcessor;
 import com.nononsenseapps.filepicker.FilePickerActivity;
-import android.widget.ImageView;
 
-import com.google.zxing.WriterException;
 
-import com.google.common.io.Files;
 import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-
+import java.util.LinkedList;
 
 
 public class SendFileActivity extends AppCompatActivity {
@@ -67,7 +62,6 @@ public class SendFileActivity extends AppCompatActivity {
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -113,47 +107,9 @@ public class SendFileActivity extends AppCompatActivity {
      *
      * @param uri
      */
-    void handleLoadedFileUri(Uri uri) {
+    LinkedList<BitMatrix> handleLoadedFileUri(Uri uri) {
         File f1 = new File(uri.getPath());
-        String encoded_string = parse_file(f1);
-        String substring = encoded_string.substring(0, 1000);
-
-        try {
-            Bitmap bmp = QRProcessor.generateQrCode(substring);
-            ImageView iv = (ImageView) findViewById(R.id.imageView);
-            iv.setImageBitmap(bmp);
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
-
-        /*for (int i = 0; i < encoded_string.length(); i += 100)
-        {
-            bmp = QRProcessor.generateQrCode()
-        }*/
-
+        return QRProcessor.fileToQrCodes(f1);
     }
 
-    String parse_file(File f) {
-        try {
-            byte[] file_bytes = Files.toByteArray(f);
-            String encoded_string = new String(file_bytes, "ISO-8859-1");
-            return encoded_string;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    byte[] parse_string(String s)
-    {
-        byte[] data;
-        try{
-            data = s.getBytes("ISO-8859-1");
-            return data;
-        } catch (UnsupportedEncodingException e)
-        {
-            e.printStackTrace();
-        }
-        return new byte[0];
-    }
 }

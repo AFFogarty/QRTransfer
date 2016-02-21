@@ -16,17 +16,13 @@
         android:id="@+id/buttonsLayout"
         android:layout_toLeftOf="@+id/centerHorizont">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Start"
-            android:onClick="pause" />
+
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Finish"
-            android:onClick="resume" />
+            android:onClick="onClickFinishButton"/>
 
     </LinearLayout>
 
@@ -49,12 +45,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Back"
-        android:onClick="resume"
+        android:id="@+id/backButton"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_toRightOf="@+id/buttonsLayout"
-        android:layout_toEndOf="@+id/buttonsLayout" />
+        android:layout_toEndOf="@+id/buttonsLayout"
+        android:onClick="onClickBackButton"/>
 
     <com.journeyapps.barcodescanner.CompoundBarcodeView
         android:id="@+id/barcode_scanner"

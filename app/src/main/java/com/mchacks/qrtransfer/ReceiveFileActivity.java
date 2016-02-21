@@ -5,11 +5,12 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import static com.mchacks.qrtransfer.CameraPreview.getCameraInstance;
+import com.mchacks.qrtransfer.util.CameraPreview;
+
+import static com.mchacks.qrtransfer.util.CameraPreview.getCameraInstance;
 
 public class ReceiveFileActivity extends AppCompatActivity {
 

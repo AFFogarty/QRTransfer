@@ -1,4 +1,4 @@
-package com.mchacks.qrtransfer;
+package com.mchacks.qrtransfer.util;
 
 import android.content.Context;
 import android.hardware.Camera;

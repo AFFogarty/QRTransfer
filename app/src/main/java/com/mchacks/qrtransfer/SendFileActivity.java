@@ -23,6 +23,8 @@ import com.mchacks.qrtransfer.util.Constants;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -32,11 +34,15 @@ public class SendFileActivity extends AppCompatActivity {
 
     LinkedBlockingQueue<BitMatrix> matrices = new LinkedBlockingQueue<>(2);
     LinkedBlockingQueue<Bitmap> images = new LinkedBlockingQueue<>(2);
-    String encoded_string = null;
+    LinkedBlockingQueue<String> encoded_strings = new LinkedBlockingQueue<>(2);
 
-    boolean doneRendering = false;
+    File selected_file = null;
+
+    boolean doneReading = false;
     boolean doneCreating = false;
+    boolean doneRendering = false;
 
+    Thread readerThread = null;
     Thread rendererThread = null;
     Thread creatorThread = null;
 
@@ -79,7 +85,7 @@ public class SendFileActivity extends AppCompatActivity {
         playSlideshowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (encoded_string != null) {
+                if (selected_file != null) {
                     TextView statusText = (TextView) findViewById(R.id.statusText);
                     statusText.setText(R.string.generatingMessage);
                     new Thread(new SlideShowRunner()).start();
@@ -135,9 +141,11 @@ public class SendFileActivity extends AppCompatActivity {
      */
     void handleLoadedFileUri(Uri uri) {
         File f = new File(uri.getPath());
-        this.encoded_string = QRProcessor.parse_file(f);
+        selected_file = f;
+        readerThread = new Thread(new FileReader());
         creatorThread = new Thread(new BMCreator());
         rendererThread = new Thread(new BMRenderer());
+        readerThread.start();
         creatorThread.start();
         rendererThread.start();
     }
@@ -150,7 +158,7 @@ public class SendFileActivity extends AppCompatActivity {
             final TextView statusText = (TextView) findViewById(R.id.statusText);
 
             int i = 1;
-            final int totalImages = (int) (encoded_string.length() / Constants.byteDensity) + 1;
+            final int totalImages = (int) (selected_file.length() / Constants.byteDensity) + 1;
             while(!doneRendering || !images.isEmpty())
             {
                 final int j = i;
@@ -189,6 +197,7 @@ public class SendFileActivity extends AppCompatActivity {
                 }
             }
             doneRendering = true;
+            return;
         }
     }
 
@@ -196,28 +205,43 @@ public class SendFileActivity extends AppCompatActivity {
     {
         public void run()
         {
-            int str_len = encoded_string.length();
-            for (int i = 0; i < str_len; i += (Constants.byteDensity + 1))
+            while(!doneReading || !encoded_strings.isEmpty())
             {
-                int end = i + Constants.byteDensity;
-                if (str_len <= end)
-                {
-                    end = str_len - 1;
-                }
-                if(i >= end){
-                    break;
-                }
-
-                String sub = encoded_string.substring(i, end);
-                try {
-                    BitMatrix bmp = QRProcessor.generateQRCodeBitMatrix(sub);
+                try{
+                    String tmp = encoded_strings.take();
+                    BitMatrix bmp = QRProcessor.generateQRCodeBitMatrix(tmp);
                     matrices.put(bmp);
-                } catch (WriterException | InterruptedException e)
+                } catch (InterruptedException | WriterException e)
                 {
                     e.printStackTrace();
                 }
             }
             doneCreating = true;
+            return;
+        }
+    }
+
+    class FileReader implements Runnable
+    {
+        public void run()
+        {
+            byte[] file_bytes = new byte[Constants.byteDensity];
+            long file_length = selected_file.length();
+            long offset = 0;
+            try {
+                FileInputStream fileInputStream = new FileInputStream(selected_file);
+                while(offset < file_length )
+                {
+                    fileInputStream.read(file_bytes);
+                    encoded_strings.put(new String(file_bytes, "ISO-8859-1"));
+                    offset += Constants.byteDensity;
+                }
+            } catch (IOException | InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+            doneReading = true;
+            return;
         }
     }
 

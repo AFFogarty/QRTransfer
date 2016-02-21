@@ -25,6 +25,7 @@ import com.nononsenseapps.filepicker.FilePickerActivity;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -148,6 +149,33 @@ public class SendFileActivity extends AppCompatActivity {
         readerThread.start();
         creatorThread.start();
         rendererThread.start();
+        new Thread(new Runnable()
+        {
+            public void run()
+            {
+                String meta = "<name>"+selected_file.getName() +"</name><hash>"+ selected_file.hashCode() +"</hash>\n";
+                QRProcessor QP = new QRProcessor();
+                try
+                {
+                    meta = new String(meta.getBytes(), "ISO-8859-1");
+                    BitMatrix bmp = QP.generateQRCodeBitMatrix(meta);
+                    final Bitmap tmp = QRProcessor.bitMatrixToBitmap(bmp);
+                    final ImageView qrCodeImageView = (ImageView) findViewById(R.id.imageView);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            qrCodeImageView.setImageBitmap(tmp);
+                            qrCodeImageView.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+                } catch (UnsupportedEncodingException | WriterException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     class SlideShowRunner implements Runnable
@@ -158,7 +186,7 @@ public class SendFileActivity extends AppCompatActivity {
             final TextView statusText = (TextView) findViewById(R.id.statusText);
 
             int i = 1;
-            final int totalImages = (int) (selected_file.length() / Constants.byteDensity) + 1;
+            final int totalImages = (int) (selected_file.length() / Constants.byteDensity) + 2;
             while(!doneRendering || !images.isEmpty())
             {
                 final int j = i;

@@ -10,13 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.mchacks.qrtransfer.util.CameraCapture;
 import com.mchacks.qrtransfer.util.CameraPreview;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import static com.mchacks.qrtransfer.util.CameraPreview.getCameraInstance;
 
@@ -45,9 +39,23 @@ public class ReceiveFileActivity extends AppCompatActivity {
         mPicture = new Camera.PictureCallback() {
             @Override
             public void onPictureTaken(byte[] data, Camera camera) {
-
                 Bitmap image = BitmapFactory.decodeByteArray(data, 0, data.length);
-
+//                BinaryBitmap binaryBitmap = BitmapProcessor.toBinaryBitmap(image);
+//                QRCodeReader reader = new QRCodeReader();
+//                try {
+//                    Result result = reader.decode(binaryBitmap);
+//                    String text = result.getText();
+//
+//                    Log.v("QRTransfer", text);
+////                    TextView debugText = (TextView) findViewById(R.id.debugTextView);
+////                    debugText.setText(text);
+//                } catch (NotFoundException e) {
+//                    e.printStackTrace();
+//                } catch (ChecksumException e) {
+//                    e.printStackTrace();
+//                } catch (FormatException e) {
+//                    e.printStackTrace();
+//                }
             }
         };
 

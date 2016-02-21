@@ -12,8 +12,28 @@
     tools:context="com.mchacks.qrtransfer.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="This is the content of the main activity!" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send File"
+            android:id="@+id/sendFileButton"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onClickSendFileButton"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Receive File"
+            android:id="@+id/receiveFileButton"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onClickReceiveFileButton"/>
+    </LinearLayout>
 </RelativeLayout>

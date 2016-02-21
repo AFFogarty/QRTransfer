@@ -17,26 +17,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton sendFileButton = (FloatingActionButton) findViewById(R.id.launchSendFile);
-        sendFileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), SendFileActivity.class);
-                startActivity(intent);
-
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-            }
-        });
-        FloatingActionButton receiveFileButton = (FloatingActionButton) findViewById(R.id.launchReceiveFile);
-        receiveFileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), ReceiveFileActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
     @Override
@@ -63,6 +43,26 @@ public class MainActivity extends AppCompatActivity {
 
     public void launchSettingsActivity(MenuItem item) {
         Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Launch the SendFileActivity.
+     *
+     * @param view the main view
+     */
+    public void onClickSendFileButton(View view) {
+        Intent intent = new Intent(view.getContext(), SendFileActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Launch the ReceiveFileActivity.
+     *
+     * @param view the main view
+     */
+    public void onClickReceiveFileButton(View view) {
+        Intent intent = new Intent(view.getContext(), ReceiveFileActivity.class);
         startActivity(intent);
     }
 }

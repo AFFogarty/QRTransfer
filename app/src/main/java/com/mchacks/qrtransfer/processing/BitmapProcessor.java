@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.google.zxing.RGBLuminanceSource;
+
 /**
  * Created by Andrew on 2016-02-20.
  */
@@ -24,5 +26,14 @@ public class BitmapProcessor {
         paint.setColor(color);
         canvas.drawRect(0F, 0F, (float) width, (float) height, paint);
         return bitmap;
+    }
+
+    public static RGBLuminanceSource toRGBLumSource(Bitmap bm)
+    {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        int[] pixels = new int[width * height];
+        bm.getPixels(pixels, 0, width, 0,0, width, height);
+        return new RGBLuminanceSource(width, height, pixels);
     }
 }

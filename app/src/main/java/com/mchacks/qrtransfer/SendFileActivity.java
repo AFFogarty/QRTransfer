@@ -231,11 +231,11 @@ public class SendFileActivity extends AppCompatActivity {
             long offset = 0;
             try {
                 FileInputStream fileInputStream = new FileInputStream(selected_file);
-                while(offset < file_length )
+                while(offset <= file_length )
                 {
                     fileInputStream.read(file_bytes);
                     encoded_strings.put(new String(file_bytes, "ISO-8859-1"));
-                    offset += Constants.byteDensity;
+                    offset += Constants.byteDensity + 1;
                 }
             } catch (IOException | InterruptedException e)
             {

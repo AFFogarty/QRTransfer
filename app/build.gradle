@@ -37,6 +37,8 @@ dependencies {
 
     // Zebra Crossing
     compile files('libs/zxing3.2.jar')
+    compile 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
+
 
     // File Chooser
     compile 'com.nononsenseapps:filepicker:2.5.0'

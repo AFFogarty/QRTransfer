@@ -1,96 +1,92 @@
 package com.mchacks.qrtransfer;
 
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.hardware.Camera;
-import android.nfc.FormatException;
+
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.ChecksumException;
-import com.google.zxing.NotFoundException;
-import com.google.zxing.PlanarYUVLuminanceSource;
-import com.google.zxing.Result;
-import com.google.zxing.common.HybridBinarizer;
-import com.google.zxing.qrcode.QRCodeReader;
-import com.mchacks.qrtransfer.processing.BitmapProcessor;
-import com.mchacks.qrtransfer.util.CameraPreview;
 
-import static com.mchacks.qrtransfer.util.CameraPreview.getCameraInstance;
+import com.google.zxing.ResultPoint;
+
+import com.journeyapps.barcodescanner.BarcodeCallback;
+import com.journeyapps.barcodescanner.BarcodeResult;
+import com.journeyapps.barcodescanner.CompoundBarcodeView;
+
+import java.util.LinkedList;
+import java.util.List;
+
 
 public class ReceiveFileActivity extends AppCompatActivity {
 
     public static final int MEDIA_TYPE_IMAGE = 1;
 
-    Camera mCamera = null;
-    Camera.PictureCallback mPicture = null;
+    private CompoundBarcodeView barcodeView;
+    LinkedList<BarcodeResult> scannedCodes = new LinkedList<>();
+    String lastScanned = "";
+    int scannedCount = 0;
+
+    private BarcodeCallback callback = new BarcodeCallback() {
+        @Override
+        public void barcodeResult(BarcodeResult result) {
+            String resText = result.getText();
+            if (resText != null) {
+                if (!resText.equals(lastScanned))
+                {
+                    scannedCount++;
+                    barcodeView.setStatusText("Scanned " + scannedCount + " code(s).");
+                    scannedCodes.add(result);
+                    System.out.print(resText);
+                    lastScanned = resText;
+                }
+            }
+        }
+
+        @Override
+        public void possibleResultPoints(List<ResultPoint> resultPoints) {
+        }
+    };
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receive_file);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        // Create an instance of Camera
-        mCamera = getCameraInstance();
-        mCamera.setDisplayOrientation(90);
-        // Create our Preview view and set it as the content of our activity.
-        CameraPreview mPreview = new CameraPreview(this, mCamera);
-        final FrameLayout preview = (FrameLayout) findViewById(R.id.cameraPreview);
-        preview.addView(mPreview);
+        barcodeView = (CompoundBarcodeView) findViewById(R.id.barcode_scanner);
+        barcodeView.decodeContinuous(callback);
+    }
 
-        mPicture = new Camera.PictureCallback() {
-            @Override
-            public void onPictureTaken(byte[] data, Camera camera) {
-//                Bitmap image = BitmapFactory.decodeByteArray(data, 0, data.length);
-//                BinaryBitmap binaryBitmap = BitmapProcessor.toBinaryBitmap(image);
-                PlanarYUVLuminanceSource planarYUVLuminanceSource = new PlanarYUVLuminanceSource(data, preview.getWidth(), preview.getHeight(), 0, 0, preview.getWidth(), preview.getHeight(), false);
-                BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(planarYUVLuminanceSource));
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-                QRCodeReader reader = new QRCodeReader();
-                try {
-                    Result result = reader.decode(binaryBitmap);
-                    String text = result.getText();
+        barcodeView.resume();
+    }
 
-                    Log.v("QRTransfer", text);
-                } catch (Resources.NotFoundException e) {
-                    e.printStackTrace();
-                } catch (ChecksumException e) {
-                    e.printStackTrace();
-                } catch (NotFoundException e) {
-                    e.printStackTrace();
-                } catch (com.google.zxing.FormatException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
+    @Override
+    protected void onPause() {
+        super.onPause();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mCamera.takePicture(null, null, mPicture);
-//                // If the user can record a video, let them.  Otherwise display a message
-//                if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-//                    Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-//                    if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-//                        startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-//                    }
-//                } else {
-//                    Snackbar.make(view, "Please enable video recording permissions!", Snackbar.LENGTH_LONG)
-//                            .setAction("Action", null).show();
-//                }
-            }
-        });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        barcodeView.pause();
+    }
+
+    public void pause(View view) {
+        barcodeView.pause();
+    }
+
+    public void resume(View view) {
+        barcodeView.resume();
+    }
+
+    public void triggerScan(View view) {
+        barcodeView.decodeSingle(callback);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return barcodeView.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event);
     }
 }
 

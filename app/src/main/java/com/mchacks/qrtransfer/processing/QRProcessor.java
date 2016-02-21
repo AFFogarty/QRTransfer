@@ -5,8 +5,20 @@ import android.graphics.Color;
 import android.media.Image;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.Binarizer;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.FormatException;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.Result;
 import com.google.zxing.WriterException;
+import com.google.zxing.common.BitArray;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.GlobalHistogramBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.io.File;
@@ -53,5 +65,23 @@ public class QRProcessor implements QRInterface {
     @Override
     public File videoToFile(File videoFile) {
         return null;
+    }
+
+
+    public static String readQRCode(Bitmap image) throws FormatException, ChecksumException, NotFoundException {
+        QRCodeReader reader = new QRCodeReader();
+        int[] pixels = new int[image.getWidth() * image.getHeight()];
+
+        for (int i = 0; i < image.getWidth(); i++) {
+            for (int j = 0; j < image.getHeight(); j++) {
+                pixels[i * j] = image.getPixel(i, j);
+            }
+        }
+
+        RGBLuminanceSource rgbLuminanceSource = new RGBLuminanceSource(image.getWidth(), image.getHeight(), pixels);
+        GlobalHistogramBinarizer globalHistogramBinarizer = new GlobalHistogramBinarizer(rgbLuminanceSource);
+        BinaryBitmap binaryBitmap = new BinaryBitmap(globalHistogramBinarizer);
+        Result result = reader.decode(binaryBitmap);
+        return result.getText();
     }
 }

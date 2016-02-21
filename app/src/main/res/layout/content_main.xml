@@ -23,7 +23,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Send File"
+            android:text="@string/title_activity_send_file"
             android:id="@+id/sendFileButton"
             android:layout_gravity="center_horizontal"
             android:onClick="onClickSendFileButton"/>
@@ -31,7 +31,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Receive File"
+            android:text="@string/title_activity_receive_file"
             android:id="@+id/receiveFileButton"
             android:layout_gravity="center_horizontal"
             android:onClick="onClickReceiveFileButton"/>

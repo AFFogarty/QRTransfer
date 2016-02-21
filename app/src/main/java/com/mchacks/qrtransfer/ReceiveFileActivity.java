@@ -10,9 +10,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.mchacks.qrtransfer.util.CameraCapture;
 import com.mchacks.qrtransfer.util.CameraPreview;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import static com.mchacks.qrtransfer.util.CameraPreview.getCameraInstance;
 
@@ -43,27 +47,8 @@ public class ReceiveFileActivity extends AppCompatActivity {
             public void onPictureTaken(byte[] data, Camera camera) {
 
                 Bitmap image = BitmapFactory.decodeByteArray(data, 0, data.length);
-                
+
             }
-
-
-////                File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-////                if (pictureFile == null){
-////                    Log.d(TAG, "Error creating media file, check storage permissions: " +
-////                            e.getMessage());
-////                    return;
-////                }
-//
-//                try {
-//                    FileOutputStream fos = new FileOutputStream(pictureFile);
-//                    fos.write(data);
-//                    fos.close();
-//                } catch (FileNotFoundException e) {
-//                    Log.d(TAG, "File not found: " + e.getMessage());
-//                } catch (IOException e) {
-//                    Log.d(TAG, "Error accessing file: " + e.getMessage());
-//                }
-//            }
         };
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

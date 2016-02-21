@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,16 +15,10 @@ import android.view.View;
 
 import com.google.zxing.common.BitMatrix;
 import com.mchacks.qrtransfer.processing.QRProcessor;
-import com.mchacks.qrtransfer.util.Constants;
 import com.nononsenseapps.filepicker.FilePickerActivity;
-import android.widget.ImageView;
 
-import com.google.zxing.WriterException;
 
-import com.google.common.io.Files;
 import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -69,7 +62,6 @@ public class SendFileActivity extends AppCompatActivity {
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -117,56 +109,7 @@ public class SendFileActivity extends AppCompatActivity {
      */
     LinkedList<BitMatrix> handleLoadedFileUri(Uri uri) {
         File f1 = new File(uri.getPath());
-        String encoded_string = parse_file(f1);
-
-        LinkedList<BitMatrix> file_code = new LinkedList<BitMatrix>();
-        int str_len = encoded_string.length();
-        for (int i = 0; i < str_len; i += (Constants.byteDensity + 1))
-        {
-            int end = i + Constants.byteDensity;
-            if (str_len <= end)
-            {
-                end = str_len - 1;
-            }
-            if(i >= end){
-                break;
-            }
-
-            String sub = encoded_string.substring(i, end);
-            try {
-                BitMatrix bmp = QRProcessor.generateQRCodeBitMatrx(sub);
-                file_code.add(bmp);
-            } catch (WriterException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("hello");
-        return file_code;
-
+        return QRProcessor.fileToQrCodes(f1);
     }
 
-    String parse_file(File f) {
-        try {
-            byte[] file_bytes = Files.toByteArray(f);
-            String encoded_string = new String(file_bytes, "ISO-8859-1");
-            return encoded_string;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    byte[] parse_string(String s)
-    {
-        byte[] data;
-        try{
-            data = s.getBytes("ISO-8859-1");
-            return data;
-        } catch (UnsupportedEncodingException e)
-        {
-            e.printStackTrace();
-        }
-        return new byte[0];
-    }
 }

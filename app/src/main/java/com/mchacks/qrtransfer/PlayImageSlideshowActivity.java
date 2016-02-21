@@ -47,7 +47,7 @@ public class PlayImageSlideshowActivity extends AppCompatActivity {
 
         // Generate some junk files
         for (int i = 0; i < 5; i++) {
-            BitMatrix b = QRProcessor.generateQRCodeBitMatrx("!" + i + "..." + i + "..." + i + "!");
+            BitMatrix b = QRProcessor.generateQRCodeBitMatrix("!" + i + "..." + i + "..." + i + "!");
             qrCodes.add(QRProcessor.bitMatrixToBitmap(b));
         }
 

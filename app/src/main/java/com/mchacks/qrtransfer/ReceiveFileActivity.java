@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.VideoView;
 
-import com.mchacks.qrtransfer.processing.QRInterface;
 import com.mchacks.qrtransfer.processing.QRProcessor;
 
 import java.io.File;
@@ -58,7 +57,7 @@ public class ReceiveFileActivity extends AppCompatActivity {
 
             // Load the video as a file object
             File videoFile = new File(videoUri.getPath());
-            QRInterface processor = new QRProcessor();
+            QRProcessor processor = new QRProcessor();
             // Decode the video
             File output = processor.videoToFile(videoFile);
         }

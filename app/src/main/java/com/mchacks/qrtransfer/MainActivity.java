@@ -38,15 +38,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        FloatingActionButton playSlideshowButton = (FloatingActionButton) findViewById(R.id.launchDebug);
-        playSlideshowButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), PlayImageSlideshowActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
     @Override

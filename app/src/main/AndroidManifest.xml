@@ -60,15 +60,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".PlayImageSlideshowActivity"
-            android:label="@string/title_activity_play_image_slideshow"
-            android:parentActivityName=".SendFileActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mchacks.qrtransfer.SendFileActivity" />
-        </activity>
     </application>
 
 </manifest>

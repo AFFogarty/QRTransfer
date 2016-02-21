@@ -69,6 +69,18 @@ public class SendFileActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
             }
         });
+        FloatingActionButton playSlideshowButton = (FloatingActionButton) findViewById(R.id.playSlideshowButton);
+        playSlideshowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    playSlideShow();
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -121,5 +133,42 @@ public class SendFileActivity extends AppCompatActivity {
  
     }
 
+    /**
+     * Play the file slideshow.
+     *
+     * @throws WriterException
+     */
+    void playSlideShow() throws WriterException {
+        LinkedList<Bitmap> qrCodes = new LinkedList<>();
+
+        // Generate some junk files
+        for (int i = 0; i < 5; i++) {
+            BitMatrix b = QRProcessor.generateQRCodeBitMatrix("!" + i + "..." + i + "..." + i + "!");
+            qrCodes.add(QRProcessor.bitMatrixToBitmap(b));
+        }
+
+        // Final red image at end
+        qrCodes.add(BitmapProcessor.createImage(Constants.qrDimension, Constants.qrDimension, Color.RED));
+
+        final ImageView qrCodeImageView = (ImageView) findViewById(R.id.imageView);
+        final TextView statusText = (TextView) findViewById(R.id.statusText);
+
+        Handler[] handlers = new Handler[qrCodes.size()];
+
+        final int totalImages = qrCodes.size();
+        for (int i = 0; i < qrCodes.size(); i++) {
+            handlers[i] = new Handler();
+            final Bitmap qrCode = qrCodes.get(i);
+            final int current = i + 1;
+            handlers[i].postDelayed(new Runnable() {
+                public void run() {
+                    // Set the status text
+                    statusText.setText(String.format("%d/%d", current, totalImages));
+                    // Set the
+                    qrCodeImageView.setImageBitmap(qrCode);
+                }
+            }, i *3000);
+        }
+    }
 
 }
